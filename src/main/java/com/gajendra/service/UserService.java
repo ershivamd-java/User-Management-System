@@ -3,6 +3,7 @@ package com.gajendra.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gajendra.entity.Role;
@@ -12,12 +13,22 @@ import com.gajendra.repository.UserRepository;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    // Constructor
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // =========================
+    // CREATE USER
+    // =========================
     public User createUser(User user) {
 
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -35,13 +46,24 @@ public class UserService {
         user.setActive(true);
         user.setCreatedAt(LocalDateTime.now());
 
+        // Password BCrypt encode
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
         return userRepository.save(user);
     }
 
+    // =========================
+    // GET ALL USERS
+    // =========================
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // =========================
+    // GET USER BY ID
+    // =========================
     public User getUserById(Long id) {
 
         return userRepository.findById(id)
@@ -52,6 +74,9 @@ public class UserService {
                 );
     }
 
+    // =========================
+    // UPDATE USER
+    // =========================
     public User updateUser(Long id, User user) {
 
         User existingUser = userRepository.findById(id)
@@ -64,12 +89,27 @@ public class UserService {
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
         existingUser.setMobile(user.getMobile());
-        existingUser.setPassword(user.getPassword());
 
+        // =====================================
+        // PASSWORD UPDATE
+        // =====================================
+        // Agar new password diya hai tabhi update karo
+        if (user.getPassword() != null
+                && !user.getPassword().isBlank()) {
+
+            existingUser.setPassword(
+                    passwordEncoder.encode(
+                            user.getPassword()
+                    )
+            );
+        }
+
+        // Role update
         if (user.getRole() != null) {
             existingUser.setRole(user.getRole());
         }
 
+        // Active status update
         if (user.getActive() != null) {
             existingUser.setActive(user.getActive());
         }
@@ -77,6 +117,9 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
+    // =========================
+    // DELETE USER
+    // =========================
     public void deleteUser(Long id) {
 
         User user = userRepository.findById(id)

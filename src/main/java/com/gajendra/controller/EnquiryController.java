@@ -1,9 +1,9 @@
 package com.gajendra.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.gajendra.entity.Enquiry;
@@ -41,7 +41,20 @@ public class EnquiryController {
                 enquiryService.getAllEnquiries()
         );
     }
+    // MY ENQUIRIES
+    // STUDENT
+    // ==========================================
 
+    @GetMapping("/my")
+    public ResponseEntity<List<Enquiry>> getMyEnquiries(
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        return ResponseEntity.ok(
+                enquiryService.getMyEnquiries(email)
+        );
+    }
     // GET ENQUIRY BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Enquiry> getEnquiryById(

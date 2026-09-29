@@ -26,6 +26,14 @@ public class EnquiryService {
         return enquiryRepository.findAll();
     }
 
+    
+    
+    
+    // STUDENT - My Enquiries
+    public List<Enquiry> getMyEnquiries(String email) {
+        return enquiryRepository.findByEmailOrderByIdDesc(email);
+    }
+    
     // READ BY ID
     public Enquiry getEnquiryById(Long id) {
 
