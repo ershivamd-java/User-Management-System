@@ -86,14 +86,28 @@ public class UserService {
                         )
                 );
 
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setMobile(user.getMobile());
+//        existingUser.setName(user.getName());
+//        existingUser.setEmail(user.getEmail());
+//        existingUser.setMobile(user.getMobile());
 
         // =====================================
         // PASSWORD UPDATE
         // =====================================
         // Agar new password diya hai tabhi update karo
+        
+        if (user.getName() != null && !user.getName().isBlank()) {
+            existingUser.setName(user.getName());
+        }
+
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            existingUser.setEmail(user.getEmail());
+        }
+
+        if (user.getMobile() != null && !user.getMobile().isBlank()) {
+            existingUser.setMobile(user.getMobile());
+        }
+        
+        
         if (user.getPassword() != null
                 && !user.getPassword().isBlank()) {
 
@@ -130,5 +144,37 @@ public class UserService {
                 );
 
         userRepository.delete(user);
+    }
+    
+    
+    ////////////////////new user upadte desable or active 
+    
+    public User disableUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found with id: " + id
+                        )
+                );
+
+        user.setActive(false);
+
+        return userRepository.save(user);
+    }
+
+
+    public User activateUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found with id: " + id
+                        )
+                );
+
+        user.setActive(true);
+
+        return userRepository.save(user);
     }
 }

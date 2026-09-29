@@ -119,6 +119,10 @@ public class AuthenticationService {
                                 "Invalid email or password"
                         )
                 );
+        
+        if (Boolean.FALSE.equals(user.getActive())) {
+            throw new RuntimeException("User account is disabled");
+        }
 
         // 2. Check password
         boolean passwordMatches =

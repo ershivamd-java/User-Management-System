@@ -107,6 +107,30 @@ public class UserController {
         return ResponseEntity.ok(
                 userService.updateUser(id, user));
     }
+    
+    
+    
+    
+    
+    
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<User> disableUser(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                userService.disableUser(id)
+        );
+    }
+
+
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<User> activateUser(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                userService.activateUser(id)
+        );
+    }
 
     // ==========================================
     // DELETE USER
