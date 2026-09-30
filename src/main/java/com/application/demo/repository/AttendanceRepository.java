@@ -19,6 +19,10 @@ public interface AttendanceRepository
             LocalDate attendanceDate
     );
 
+    List<Attendance> findByBatchId(
+            Long batchId
+    );
+
     List<Attendance> findByStudentIdOrderByAttendanceDateDesc(
             Long studentId
     );
