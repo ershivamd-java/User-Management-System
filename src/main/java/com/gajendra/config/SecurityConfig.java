@@ -57,6 +57,7 @@ public class SecurityConfig {
         // React frontend ka address
         configuration.setAllowedOrigins(
                 List.of("http://localhost:5173")
+               
                 
         );
 
@@ -144,7 +145,11 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-
+/////new new 1/10/26
+            		.requestMatchers("/api/audit-logs/**")
+            		.hasRole("ADMIN")
+            		
+            		
                 // Login/Register public
                 .requestMatchers(
                     "/api/auth/register",
@@ -193,8 +198,48 @@ public class SecurityConfig {
                     "ADMIN",
                     "STAFF"
                 )
+                //Dashboad
+                //Admin+staff+student
+                
+                .requestMatchers("/api/dashboard/**")
+                .hasAnyRole(
+                    "ADMIN",
+                    "STAFF",
+                    "STUDENT"
+                )
+                
+                // ADMIN + STAFF
+                .requestMatchers("/api/admissions/**")
+                .hasAnyRole("ADMIN", "STAFF")
+
+                // STUDENT can see ONLY own attendance
+                .requestMatchers("/api/attendance/my")
+                .hasAnyRole(
+                    "ADMIN",
+                    "STAFF",
+                    "STUDENT"
+                )
+             // Student/Staff/Admin can view own attendance percentage
+                .requestMatchers("/api/attendance/my/percentage")
+                .hasAnyRole(
+                    "ADMIN",
+                    "STAFF",
+                    "STUDENT"
+                )
+                
+                // ADMIN + STAFF can manage attendance
+                .requestMatchers("/api/attendance/**")
+                .hasAnyRole("ADMIN", "STAFF")
 
 
+                
+                
+                //notification 
+                .requestMatchers("/api/notifications/**")
+                .hasAnyRole("ADMIN", "STAFF", "STUDENT")
+                
+                
+                
                 // Error page
                 .requestMatchers("/error")
                 .permitAll()
@@ -212,6 +257,8 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
             );
 
+        
+        
 
         return http.build();
     }

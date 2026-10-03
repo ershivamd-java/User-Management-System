@@ -85,6 +85,9 @@ public class UserService {
                                 "User not found with id: " + id
                         )
                 );
+        
+        
+        //ye method put ke liye email bhi magti h 
 
 //        existingUser.setName(user.getName());
 //        existingUser.setEmail(user.getEmail());

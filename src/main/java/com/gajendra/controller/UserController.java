@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gajendra.dto.UserResponse;
 import com.gajendra.entity.User;
+
 import com.gajendra.service.UserService;
 
 @RestController
@@ -24,8 +25,13 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+
+    public UserController(
+            UserService userService
+           ) {
+
         this.userService = userService;
+       
     }
 
     // ==========================================
@@ -52,6 +58,7 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
     // ==========================================
     // CREATE USER
     // ADMIN ONLY
@@ -59,10 +66,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(
-            @RequestBody User user) {
+            @RequestBody User user,
+            Authentication authentication) {
 
         User savedUser =
                 userService.createUser(user);
+
+        // Logged-in admin ka email
+        String adminEmail = authentication.getName();
+
+        // Audit log create
+      
 
         return new ResponseEntity<>(
                 savedUser,
@@ -102,34 +116,59 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
-            @RequestBody User user) {
+            @RequestBody User user,
+            Authentication authentication) {
 
-        return ResponseEntity.ok(
-                userService.updateUser(id, user));
+        User updatedUser =
+                userService.updateUser(id, user);
+
+        // Logged-in admin ka email
+        String adminEmail = authentication.getName();
+
+        // Audit log create
+      
+
+        return ResponseEntity.ok(updatedUser);
     }
-    
-    
-    
-    
-    
-    
+
+    // ==========================================
+    // DISABLE USER
+    // ADMIN ONLY
+    // ==========================================
+
     @PutMapping("/{id}/disable")
     public ResponseEntity<User> disableUser(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        return ResponseEntity.ok(
-                userService.disableUser(id)
-        );
+        User disabledUser =
+                userService.disableUser(id);
+
+        String adminEmail = authentication.getName();
+
+     
+
+        return ResponseEntity.ok(disabledUser);
     }
 
+    // ==========================================
+    // ACTIVATE USER
+    // ADMIN ONLY
+    // ==========================================
 
     @PutMapping("/{id}/activate")
     public ResponseEntity<User> activateUser(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        return ResponseEntity.ok(
-                userService.activateUser(id)
-        );
+        User activatedUser =
+                userService.activateUser(id);
+
+        String adminEmail = authentication.getName();
+
+      
+
+        return ResponseEntity.ok(activatedUser);
     }
 
     // ==========================================
@@ -139,9 +178,18 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        // Delete se pehle user ko retrieve karna
+        User existingUser =
+                userService.getUserById(id);
 
         userService.deleteUser(id);
+
+        String adminEmail = authentication.getName();
+
+     
 
         return ResponseEntity.ok(
                 "User deleted successfully");
