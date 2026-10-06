@@ -2,6 +2,7 @@ package com.gajendra.service;
 
 import com.gajendra.dto.AdmissionRequest;
 import com.gajendra.entity.Admission;
+import com.gajendra.entity.AdmissionStatus;
 import com.gajendra.entity.Batch;
 import com.gajendra.entity.Course;
 import com.gajendra.entity.Enquiry;
@@ -91,6 +92,7 @@ public class AdmissionService {
         admission.setDiscount(discount);
         admission.setFinalFee(courseFee - discount);
         admission.setAdmissionDate(LocalDate.now());
+        admission.setStatus(AdmissionStatus.ADMITTED);
 
         Admission savedAdmission = admissionRepository.save(admission);
 
