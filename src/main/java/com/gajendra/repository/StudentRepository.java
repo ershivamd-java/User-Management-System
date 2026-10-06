@@ -10,4 +10,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByBatchId(Long batchId);
 
     long countByBatchId(Long batchId);
+
+    List<Student> findByStudentNameContainingIgnoreCase(String studentName);
+
+    List<Student> findByMobile(String mobile);
 }
