@@ -73,6 +73,10 @@ public class Admission {
     @DecimalMin(value = "0.0", inclusive = true, message = "Final fee cannot be negative")
     @Column(nullable = false)
     private Double finalFee;
+    
+    @Enumerated(EnumType.STRING)
+    @Column
+    private AdmissionStatus status;
 
     @Column(nullable = false)
     private LocalDate admissionDate;
@@ -109,4 +113,12 @@ public class Admission {
 
     public LocalDate getAdmissionDate() { return admissionDate; }
     public void setAdmissionDate(LocalDate admissionDate) { this.admissionDate = admissionDate; }
+    
+    public AdmissionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AdmissionStatus status) {
+        this.status = status;
+    }
 }
