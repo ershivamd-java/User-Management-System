@@ -30,6 +30,9 @@ public class Student {
     @Column(nullable = false)
     private String email;
 
+    private String address;
+
+    @NotBlank(message = "Qualification is required")
     @NotBlank(message = "Qualification is required")
     @Column(nullable = false)
     private String qualification;
@@ -61,6 +64,9 @@ public class Student {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
     public String getQualification() { return qualification; }
     public void setQualification(String qualification) { this.qualification = qualification; }
@@ -73,4 +79,5 @@ public class Student {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
 }
