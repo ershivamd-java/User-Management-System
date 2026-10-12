@@ -1,9 +1,13 @@
+
 package com.gajendra.controller;
 
 import com.gajendra.dto.CourseCompletionRequest;
 import com.gajendra.entity.CourseCompletion;
+import com.gajendra.service.CertificatePdfService;
 import com.gajendra.service.CourseCompletionService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +18,13 @@ import java.util.List;
 public class CourseCompletionController {
 
     private final CourseCompletionService courseCompletionService;
+    private final CertificatePdfService certificatePdfService;
 
     public CourseCompletionController(
-            CourseCompletionService courseCompletionService) {
+            CourseCompletionService courseCompletionService,
+            CertificatePdfService certificatePdfService) {
         this.courseCompletionService = courseCompletionService;
+        this.certificatePdfService = certificatePdfService;
     }
 
     @PostMapping("/students/{studentId}/complete-course")
@@ -39,6 +46,28 @@ public class CourseCompletionController {
                 courseCompletionService.getCertificate(studentId);
 
         return ResponseEntity.ok(completion);
+    }
+
+    @GetMapping(
+            value = "/students/{studentId}/certificate/pdf",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadCertificatePdf(
+            @PathVariable Long studentId) {
+
+        CourseCompletion completion =
+                courseCompletionService.getCertificate(studentId);
+
+        byte[] pdf = certificatePdfService.generateCertificatePdf(completion);
+
+        String filename = "certificate-"
+                + completion.getCertificateNumber() + ".pdf";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + filename + "\"")
+                .body(pdf);
     }
 
     @GetMapping("/course-completions")
